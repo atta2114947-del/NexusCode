@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusCode — Master the Future of Tech</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: 'rgba(17, 24, 39, 0.7)',
+                        neonCyan: '#06b6d4',
+                        neonPurple: '#a855f7',
+                        neonBlue: '#3b82f6'
+                    },
+                    boxShadow: {
+                        'neon': '0 0 25px rgba(6, 182, 212, 0.4)',
+                        'neon-purple': '0 0 25px rgba(168, 85, 247, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glassmorphism-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+        .glassmorphism-card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.3);
+        }
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-100 antialiased selection:bg-neonCyan selection:text-darkBg">
+
+    <!-- 1. Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between glassmorphism rounded-b-2xl sm:rounded-2xl sm:mt-4 sm:border sm:border-white/10">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-neonCyan via-neonBlue to-neonPurple flex items-center justify-center shadow-neon transition-transform group-hover:scale-105">
+                    <i class="fa-solid fa-code text-darkBg font-bold text-lg"></i>
+                </div>
+                <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple bg-clip-text text-transparent">NexusCode</span>
+            </a>
+
+            <!-- Nav Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
+                <a href="#courses" class="hover:text-neonCyan transition-colors">Courses</a>
+                <a href="#features" class="hover:text-neonCyan transition-colors">Features</a>
+                <a href="#testimonials" class="hover:text-neonCyan transition-colors">Testimonials</a>
+                <a href="#pricing" class="hover:text-neonCyan transition-colors">Pricing</a>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="hidden sm:flex items-center space-x-4">
+                <a href="#courses" class="relative px-6 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:opacity-90 hover:scale-105 active:scale-95">
+                    Get Started
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-btn" class="md:hidden text-gray-300 hover:text-neonCyan focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden glassmorphism mx-4 mt-2 rounded-2xl p-6 flex flex-col space-y-4 text-center">
+            <a href="#courses" class="mobile-link text-gray-300 hover:text-neonCyan font-medium">Courses</a>
+            <a href="#features" class="mobile-link text-gray-300 hover:text-neonCyan font-medium">Features</a>
+            <a href="#testimonials" class="mobile-link text-gray-300 hover:text-neonCyan font-medium">Testimonials</a>
+            <a href="#pricing" class="mobile-link text-gray-300 hover:text-neonCyan font-medium">Pricing</a>
+            <a href="#courses" class="mobile-link px-6 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon text-center">Get Started</a>
+        </div>
+    </header>
+
+    <!-- 2. Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden">
+        <!-- Three.js Canvas Container -->
+        <div id="three-canvas-container"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center hero-content">
+            <!-- Badge -->
+            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glassmorphism mb-6 border border-neonCyan/30 animate-pulse">
+                <span class="flex h-2 w-2 rounded-full bg-neonCyan"></span>
+                <span class="text-xs sm:text-sm font-medium text-cyan-300">Next-Gen Tech Academy 2026</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl mx-auto leading-tight mb-6">
+                Master the Future of Tech with <span class="bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple bg-clip-text text-transparent text-glow">Industry-Leading Courses</span>
+            </h1>
+
+            <!-- Subheadline -->
+            <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-10">
+                Gain hands-on experience in Web Development, Artificial Intelligence, Cybersecurity, and Cloud Computing with mentorship from elite engineering leads.
+            </p>
+
+            <!-- Dual CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="#courses" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-base bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95 flex items-center justify-center space-x-3">
+                    <span>Explore Courses</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <button onclick="openTrailerModal()" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-base glassmorphism text-white border border-white/20 hover:bg-white/10 transition-all hover:scale-105 active:scale-95 flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-play text-neonCyan"></i>
+                    <span>Watch Trailer</span>
+                </button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-20 pt-10 border-t border-white/10">
+                <div class="glassmorphism p-4 rounded-2xl">
+                    <div class="text-3xl font-extrabold text-neonCyan">45K+</div>
+                    <div class="text-xs sm:text-sm text-gray-400 mt-1">Active Students</div>
+                </div>
+                <div class="glassmorphism p-4 rounded-2xl">
+                    <div class="text-3xl font-extrabold text-neonPurple">98%</div>
+                    <div class="text-xs sm:text-sm text-gray-400 mt-1">Placement Rate</div>
+                </div>
+                <div class="glassmorphism p-4 rounded-2xl">
+                    <div class="text-3xl font-extrabold text-neonBlue">120+</div>
+                    <div class="text-xs sm:text-sm text-gray-400 mt-1">Expert Mentors</div>
+                </div>
+                <div class="glassmorphism p-4 rounded-2xl">
+                    <div class="text-3xl font-extrabold text-pink-500">4.9/5</div>
+                    <div class="text-xs sm:text-sm text-gray-400 mt-1">Student Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Course Catalog Section -->
+    <section id="courses" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">Explore Our <span class="bg-gradient-to-r from-neonCyan to-neonPurple bg-clip-text text-transparent">Curriculum</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Hand-crafted programs built to take you from absolute beginner to industry-ready senior engineer.</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+                <button onclick="filterCourses('all')" class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-neonCyan text-darkBg shadow-neon" data-filter="all">All Courses</button>
+                <button onclick="filterCourses('web')" class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all glassmorphism text-gray-300 hover:text-white" data-filter="web">Web Dev</button>
+                <button onclick="filterCourses('ai')" class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all glassmorphism text-gray-300 hover:text-white" data-filter="ai">AI & ML</button>
+                <button onclick="filterCourses('cyber')" class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all glassmorphism text-gray-300 hover:text-white" data-filter="cyber">Cyber Security</button>
+                <button onclick="filterCourses('cloud')" class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all glassmorphism text-gray-300 hover:text-white" data-filter="cloud">Cloud Computing</button>
+            </div>
+
+            <!-- Course Grid -->
+            <div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Course Card 1: Web Dev -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="web">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Full-Stack Web Dev" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-neonCyan/90 text-darkBg backdrop-blur-md">Web Dev</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-cyan-300 border border-cyan-500/30">Advanced</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">4.9</span>
+                                <span class="text-gray-400">(1,420 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Full-Stack Web Engineering 2026</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Master React, Next.js 15, Node.js, GraphQL, and microservices architecture with production projects.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-neonCyan/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">Sarah Jenkins</h4>
+                                    <p class="text-[10px] text-gray-400">Ex-Principal Engineer @ Vercel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-neonCyan">$799</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 2: AI & ML -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="ai">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80" alt="AI & Machine Learning" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-neonPurple/90 text-white backdrop-blur-md">AI & ML</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-purple-300 border border-purple-500/30">Expert</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">5.0</span>
+                                <span class="text-gray-400">(980 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Generative AI & LLM Engineering</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Build custom RAG systems, fine-tune open-source transformers, and deploy production AI agents.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-neonPurple/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">Dr. Alex Vance</h4>
+                                    <p class="text-[10px] text-gray-400">AI Research Lead @ OpenAI</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-neonPurple">$999</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonPurple to-pink-500 text-white shadow-neon-purple transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 3: Cyber Security -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="cyber">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Cyber Security" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-blue-600/90 text-white backdrop-blur-md">Cyber Security</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-blue-300 border border-blue-500/30">Intermediate</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">4.8</span>
+                                <span class="text-gray-400">(750 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Ethical Hacking & Penetration Testing</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Learn network defense, zero-day exploit discovery, CTF challenges, and SOC analyst workflows.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-blue-500/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">Marcus Thorne</h4>
+                                    <p class="text-[10px] text-gray-400">Chief Security Officer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-blue-400">$699</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-500 to-neonCyan text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 4: Cloud Computing -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="cloud">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Cloud Computing" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-cyan-600/90 text-white backdrop-blur-md">Cloud Computing</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-cyan-300 border border-cyan-500/30">Advanced</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">4.9</span>
+                                <span class="text-gray-400">(1,120 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">AWS & Kubernetes DevOps Mastery</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Master Terraform, Docker, Kubernetes, CI/CD pipelines, and cloud-native serverless architecture.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-cyan-400/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">Elena Rostova</h4>
+                                    <p class="text-[10px] text-gray-400">Cloud Architect @ AWS</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-neonCyan">$849</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 5: Web Dev -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="web">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80" alt="UI/UX Engineering" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-neonCyan/90 text-darkBg backdrop-blur-md">Web Dev</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-cyan-300 border border-cyan-500/30">Beginner</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">4.7</span>
+                                <span class="text-gray-400">(620 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Modern Frontend & 3D UI Development</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Learn Tailwind CSS, Three.js, WebGL, and Framer Motion to create immersive web experiences.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-neonCyan/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">David Chen</h4>
+                                    <p class="text-[10px] text-gray-400">Design Technologist</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-neonCyan">$599</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Course Card 6: AI & ML -->
+                <div class="course-card glassmorphism-card rounded-2xl overflow-hidden flex flex-col justify-between" data-category="ai">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" alt="Deep Learning" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-xs font-bold bg-neonPurple/90 text-white backdrop-blur-md">AI & ML</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold bg-darkBg/80 text-purple-300 border border-purple-500/30">Advanced</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 text-yellow-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-gray-200">4.9</span>
+                                <span class="text-gray-400">(890 reviews)</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Deep Learning & Computer Vision</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-2">Build neural networks with PyTorch, image recognition models, and real-time video analytics pipelines.</p>
+                            <div class="flex items-center space-x-3 mb-6">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80" alt="Instructor" class="w-9 h-9 rounded-full object-cover border border-neonPurple/50">
+                                <div>
+                                    <h4 class="text-xs font-semibold text-gray-200">Dr. Sophia Martinez</h4>
+                                    <p class="text-[10px] text-gray-400">Head of AI Labs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between border-t border-white/5 mt-auto">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Investment</span>
+                            <span class="text-xl font-extrabold text-neonPurple">$899</span>
+                        </div>
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-neonPurple to-pink-500 text-white shadow-neon-purple transition-all hover:scale-105 active:scale-95">
+                            Enroll Now
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Why Choose Us / Features Section -->
+    <section id="features" class="py-24 relative overflow-hidden bg-gradient-to-b from-transparent via-slate-900/40 to-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">Why Engineers <span class="bg-gradient-to-r from-neonCyan to-neonBlue bg-clip-text text-transparent">Choose NexusCode</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">We don't just teach syntax—we build elite technical thinkers ready to lead top-tier tech companies.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Feature 1 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-neonCyan to-neonBlue flex items-center justify-center text-darkBg text-2xl font-bold mb-6 shadow-neon">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">100% Practical Projects</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Build production-grade applications that solve real-world problems and stand out in your portfolio.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-neonPurple to-pink-500 flex items-center justify-center text-white text-2xl font-bold mb-6 shadow-neon-purple">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Expert Mentorship</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Get 1-on-1 code reviews, live debugging sessions, and guidance from engineers at FAANG companies.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-darkBg text-2xl font-bold mb-6 shadow-neon">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Job Placement Support</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Exclusive access to our partner hiring network, resume tailoring workshops, and mock technical interviews.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold mb-6 shadow-neon-purple">
+                        <i class="fa-solid fa-infinity"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Lifetime Access</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Enjoy lifetime access to all course updates, newly added modules, and our exclusive alumni community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Testimonials / Success Stories -->
+    <section id="testimonials" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">Student <span class="bg-gradient-to-r from-neonPurple to-pink-500 bg-clip-text text-transparent">Success Stories</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Hear how our graduates transformed their careers and landed roles at world-class technology leaders.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-1 text-yellow-400 text-sm mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm italic mb-6 leading-relaxed">"NexusCode completely changed my career trajectory. The Web Dev program gave me the exact skills and confidence I needed to land a Frontend Engineer role at Google."</p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-white/10 pt-4">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Liam Vance" class="w-12 h-12 rounded-full object-cover border border-neonCyan/50">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Liam Vance</h4>
+                                <p class="text-xs text-gray-400">Frontend Engineer</p>
+                            </div>
+                        </div>
+                        <div class="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-cyan-400 flex items-center space-x-1.5">
+                            <i class="fa-brands fa-google"></i>
+                            <span>Google</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-1 text-yellow-400 text-sm mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm italic mb-6 leading-relaxed">"The AI & ML engineering course is hands down the best on the market. The depth of instruction on RAG systems and LLMs helped me secure a promotion to AI Lead."</p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-white/10 pt-4">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Jessica Taylor" class="w-12 h-12 rounded-full object-cover border border-neonPurple/50">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Jessica Taylor</h4>
+                                <p class="text-xs text-gray-400">AI Architect</p>
+                            </div>
+                        </div>
+                        <div class="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-purple-400 flex items-center space-x-1.5">
+                            <i class="fa-brands fa-microsoft"></i>
+                            <span>Microsoft</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glassmorphism-card p-8 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-1 text-yellow-400 text-sm mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm italic mb-6 leading-relaxed">"Transitioning from traditional IT to Cloud DevOps felt daunting, but the mentors made complex Kubernetes concepts crystal clear. Incredible community and support."</p>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-white/10 pt-4">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Marcus Brody" class="w-12 h-12 rounded-full object-cover border border-blue-500/50">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Marcus Brody</h4>
+                                <p class="text-xs text-gray-400">Cloud Engineer</p>
+                            </div>
+                        </div>
+                        <div class="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-bold text-orange-400 flex items-center space-x-1.5">
+                            <i class="fa-brands fa-aws"></i>
+                            <span>Amazon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / CTA Section -->
+    <section id="pricing" class="py-24 relative bg-gradient-to-b from-slate-900/60 to-darkBg">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="glassmorphism p-10 sm:p-16 rounded-3xl border border-neonCyan/30 shadow-neon relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-60 h-60 bg-neonCyan/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-60 h-60 bg-neonPurple/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <h2 class="text-3xl sm:text-5xl font-extrabold mb-6">Ready to Accelerate Your <span class="bg-gradient-to-r from-neonCyan to-neonPurple bg-clip-text text-transparent">Tech Career?</span></h2>
+                <p class="text-gray-400 max-w-xl mx-auto mb-8">Join over 45,000 engineers worldwide. Get unlimited access to all courses, mentorship, and career placement services.</p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#courses" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-base bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg shadow-neon transition-all hover:scale-105 active:scale-95">
+                        Get All-Access Pass — $49/mo
+                    </a>
+                </div>
+                <p class="text-xs text-gray-400 mt-4">7-day money-back guarantee. No questions asked.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Footer -->
+    <footer class="border-t border-white/10 bg-darkBg pt-16 pb-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+                <!-- Col 1: Brand & Newsletter -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-neonCyan to-neonPurple flex items-center justify-center shadow-neon">
+                            <i class="fa-solid fa-code text-darkBg font-bold"></i>
+                        </div>
+                        <span class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-neonCyan to-neonPurple bg-clip-text text-transparent">NexusCode</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 max-w-sm">Empowering the next generation of engineers with elite technical education and mentorship.</p>
+                    
+                    <!-- Newsletter Form -->
+                    <form onsubmit="event.preventDefault(); alert('Subscribed successfully!');" class="flex items-center space-x-2 max-w-sm">
+                        <input type="email" placeholder="Enter your email" required class="bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-neonCyan w-full">
+                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-neonCyan text-darkBg font-bold text-sm shadow-neon hover:opacity-90 transition-all">Join</button>
+                    </form>
+                </div>
+
+                <!-- Col 2: Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Quick Links</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#courses" class="hover:text-neonCyan transition-colors">Courses</a></li>
+                        <li><a href="#features" class="hover:text-neonCyan transition-colors">Features</a></li>
+                        <li><a href="#testimonials" class="hover:text-neonCyan transition-colors">Testimonials</a></li>
+                        <li><a href="#pricing" class="hover:text-neonCyan transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Programs -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Programs</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#courses" class="hover:text-neonCyan transition-colors">Web Development</a></li>
+                        <li><a href="#courses" class="hover:text-neonCyan transition-colors">AI & Machine Learning</a></li>
+                        <li><a href="#courses" class="hover:text-neonCyan transition-colors">Cyber Security</a></li>
+                        <li><a href="#courses" class="hover:text-neonCyan transition-colors">Cloud DevOps</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Socials -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Connect</h4>
+                    <div class="flex space-x-3 text-lg">
+                        <a href="#" class="w-10 h-10 rounded-xl glassmorphism flex items-center justify-center text-gray-300 hover:text-neonCyan hover:border-neonCyan transition-all"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-xl glassmorphism flex items-center justify-center text-gray-300 hover:text-neonCyan hover:border-neonCyan transition-all"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-xl glassmorphism flex items-center justify-center text-gray-300 hover:text-neonCyan hover:border-neonCyan transition-all"><i class="fa-brands fa-discord"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-xl glassmorphism flex items-center justify-center text-gray-300 hover:text-neonCyan hover:border-neonCyan transition-all"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500">
+                <p>&copy; 2026 NexusCode Academy. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0">
+                    <a href="#" class="hover:text-gray-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-gray-400 transition-colors">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Trailer Modal Placeholder -->
+    <div id="trailer-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden">
+        <div class="glassmorphism p-6 rounded-2xl max-w-2xl w-full mx-4 border border-white/20 relative">
+            <button onclick="closeTrailerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold mb-4 text-white">NexusCode Platform Trailer</h3>
+            <div class="aspect-video bg-slate-900 rounded-xl flex items-center justify-center border border-white/10">
+                <div class="text-center">
+                    <i class="fa-solid fa-play text-4xl text-neonCyan mb-2 animate-bounce"></i>
+                    <p class="text-sm text-gray-400">Interactive trailer preview playing in 4K HDR</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Interactivity & Three.js -->
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Course Filtering Script
+        function filterCourses(category) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if(btn.getAttribute('data-filter') === category) {
+                    btn.className = 'filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-neonCyan text-darkBg shadow-neon';
+                } else {
+                    btn.className = 'filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm transition-all glassmorphism text-gray-300 hover:text-white';
+                }
+            });
+
+            const cards = document.querySelectorAll('.course-card');
+            cards.forEach(card => {
+                if(category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Trailer Modal Controls
+        function openTrailerModal() {
+            document.getElementById('trailer-modal').classList.remove('hidden');
+        }
+        function closeTrailerModal() {
+            document.getElementById('trailer-modal').classList.add('hidden');
+        }
+
+        // Three.js Interactive Background (Wireframe Tech Mesh & Particles)
+        const container = document.getElementById('three-canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        
+        const canvasElement = renderer.domElement;
+        canvasElement.id = 'three-canvas';
+        container.appendChild(canvasElement);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 800;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.025,
+            color: '#06b6d4',
+            transparent: true,
+            opacity: 0.8
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // Rotating Wireframe Icosahedron Mesh
+        const geometry = new THREE.IcosahedronGeometry(2.5, 2);
+        const material = new THREE.MeshBasicMaterial({
+            color: '#a855f7',
+            wireframe: true,
+            transparent: true,
+            opacity: 0.25
+        });
+        const sphereMesh = new THREE.Mesh(geometry, material);
+        scene.add(sphereMesh);
+
+        camera.position.z = 5;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) / 500;
+            mouseY = (event.clientY - window.innerHeight / 2) / 500;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            const elapsedTime = clock.getElapsedTime();
+
+            sphereMesh.rotation.y = elapsedTime * 0.15 + targetX;
+            sphereMesh.rotation.x = elapsedTime * 0.1 + targetY;
+
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Window Resize Listener
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
